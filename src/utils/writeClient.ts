@@ -55,6 +55,7 @@ export const writeClient = async (
 ): Promise<void> => {
     const outputPath = resolve(process.cwd(), output);
     const outputPathCore = resolve(outputPath, 'core');
+    const outputPathCoreUtils = resolve(outputPath, 'core', 'utils');
     const outputPathModels = resolve(outputPath, 'models');
     const outputPathSchemas = resolve(outputPath, 'schemas');
     const outputPathServices = resolve(outputPath, 'services');
@@ -65,8 +66,17 @@ export const writeClient = async (
 
     if (exportCore) {
         await rmdir(outputPathCore);
-        await mkdir(outputPathCore);
-        await writeClientCore(client, templates, outputPathCore, httpClient, indent, clientName, request);
+        await mkdir(outputPathCoreUtils);
+        await writeClientCore(
+            client,
+            templates,
+            outputPathCore,
+            outputPathCoreUtils,
+            httpClient,
+            indent,
+            clientName,
+            request
+        );
     }
 
     if (exportServices) {

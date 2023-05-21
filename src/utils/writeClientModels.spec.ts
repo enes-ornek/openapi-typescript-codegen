@@ -49,6 +49,9 @@ describe('writeClientModels', () => {
                 request: () => 'request',
                 baseHttpRequest: () => 'baseHttpRequest',
                 httpRequest: () => 'httpRequest',
+                utils: {
+                    omitReadonly: () => 'omitReadonly',
+                },
             },
         };
 
