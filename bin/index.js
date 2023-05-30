@@ -24,7 +24,7 @@ const params = program
     .option('--postfix <value>', 'Deprecated: Use --postfixServices instead. Service name postfix', 'Service')
     .option('--postfixServices <value>', 'Service name postfix', 'Service')
     .option('--postfixModels <value>', 'Model name postfix')
-    .option('--transformModelCase <value>', 'Transform model case [camel, snake]', 'none')
+    .option('--transformCase <value>', 'Transforms field names to specified case [camel, snake]', 'none')
     .option('--request <value>', 'Path to custom request file')
     .parse(process.argv)
     .opts();
@@ -46,7 +46,7 @@ if (OpenAPI) {
         indent: params.indent,
         postfixServices: params.postfixServices ?? params.postfix,
         postfixModels: params.postfixModels,
-        transformModelCase: params.transformModelCase,
+        transformCase: params.transformCase,
         request: params.request,
     })
         .then(() => {
