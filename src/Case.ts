@@ -1,4 +1,4 @@
-import { camelCase, snakeCase } from 'lodash';
+import { camelCase, flow, snakeCase, upperFirst } from 'lodash';
 
 import { Enum } from './client/interfaces/Enum';
 import { Model } from './client/interfaces/Model';
@@ -11,8 +11,14 @@ export enum Case {
     SNAKE = 'snake',
 }
 
+const pascalCase = flow(camelCase, upperFirst);
+
+const isUpperCase = (str: string) => /^[A-Z]*$/.test(str);
+
+const camelWithoutFirstLetter = (str: string) => (isUpperCase(str[0]) ? pascalCase(str) : camelCase(str));
+
 const transforms = {
-    [Case.CAMEL]: camelCase,
+    [Case.CAMEL]: camelWithoutFirstLetter,
     [Case.SNAKE]: snakeCase,
 };
 
