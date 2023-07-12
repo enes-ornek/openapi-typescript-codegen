@@ -1,3 +1,5 @@
+import { camelCase, snakeCase } from 'lodash';
+
 import { Enum } from './client/interfaces/Enum';
 import { Model } from './client/interfaces/Model';
 import { OperationResponse } from './client/interfaces/OperationResponse';
@@ -8,19 +10,10 @@ export enum Case {
     CAMEL = 'camel',
     SNAKE = 'snake',
 }
-// Convert a string from snake case to camel case.
-const toCamelCase = (str: string): string => {
-    return str.replace(/_([a-z])/g, match => match[1].toUpperCase());
-};
-
-// Convert a string from camel case or pascal case to snake case.
-const toSnakeCase = (str: string): string => {
-    return str.replace(/([A-Z])/g, match => `_${match.toLowerCase()}`);
-};
 
 const transforms = {
-    [Case.CAMEL]: toCamelCase,
-    [Case.SNAKE]: toSnakeCase,
+    [Case.CAMEL]: camelCase,
+    [Case.SNAKE]: snakeCase,
 };
 
 // A recursive function that looks at the models and their properties and
