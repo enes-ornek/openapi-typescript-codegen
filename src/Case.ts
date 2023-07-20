@@ -9,25 +9,29 @@ export enum Case {
     NONE = 'none',
     CAMEL = 'camel',
     SNAKE = 'snake',
+    PASCAL = 'pascal',
 }
 
-const pascalCase = flow(camelCase, upperFirst);
+export const pascalCase = flow(camelCase, upperFirst);
 
-const isUpperCase = (str: string) => /^[A-Z]*$/.test(str);
+const isMultipleWords = (str: string) => Boolean(str.match(/[\s_-]|[a-z][A-Z0-9]/g));
 
-const camelWithoutFirstLetter = (str: string) => (isUpperCase(str[0]) ? pascalCase(str) : camelCase(str));
+const camelCaseForMultipleWords = (str: string) => (isMultipleWords(str) ? camelCase(str) : str);
+const snakeCaseForMultipleWords = (str: string) => (isMultipleWords(str) ? snakeCase(str) : str);
 
 const transforms = {
-    [Case.CAMEL]: camelWithoutFirstLetter,
-    [Case.SNAKE]: snakeCase,
+    [Case.CAMEL]: camelCaseForMultipleWords,
+    [Case.SNAKE]: snakeCaseForMultipleWords,
+    [Case.PASCAL]: pascalCase,
 };
 
 // A recursive function that looks at the models and their properties and
 // converts each property name using the provided transform function.
 export const convertModelNames = <T extends Model | OperationResponse>(model: T, type: Exclude<Case, Case.NONE>): T => {
+    // if (model.export === 'array') console.log(model);
     return {
         ...model,
-        name: transforms[type](model.name),
+        name: model.export === 'interface' ? model.name : transforms[type](model.name),
         link: model.link ? convertModelNames(model.link, type) : null,
         enum: model.enum.map(modelEnum => convertEnumName(modelEnum, type)),
         enums: model.enums.map(property => convertModelNames(property, type)),
