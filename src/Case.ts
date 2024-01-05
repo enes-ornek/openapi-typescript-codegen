@@ -14,7 +14,7 @@ export enum Case {
 
 export const pascalCase = flow(camelCase, upperFirst);
 
-const isMultipleWords = (str: string) => Boolean(str.match(/[\s_-]|[a-z][A-Z0-9]/g));
+const isMultipleWords = (str: string) => Boolean(str.match(/[\s_]|[a-z][A-Z0-9]/g));
 
 const camelCaseForMultipleWords = (str: string) => (isMultipleWords(str) ? camelCase(str) : str);
 const snakeCaseForMultipleWords = (str: string) => (isMultipleWords(str) ? snakeCase(str) : str);
@@ -23,6 +23,12 @@ const transforms = {
     [Case.CAMEL]: camelCaseForMultipleWords,
     [Case.SNAKE]: snakeCaseForMultipleWords,
     [Case.PASCAL]: pascalCase,
+};
+
+const startsWithDigit = (inputString: string): boolean => {
+    // Regular expression to check if the string starts with a digit
+    const regex = /^\d/;
+    return regex.test(inputString);
 };
 
 // A recursive function that looks at the models and their properties and
@@ -40,9 +46,10 @@ export const convertModelNames = <T extends Model | OperationResponse>(model: T,
 };
 
 const convertEnumName = (modelEnum: Enum, type: Exclude<Case, Case.NONE>): Enum => {
+    const transformedName = transforms[type](modelEnum.name);
     return {
         ...modelEnum,
-        name: transforms[type](modelEnum.name),
+        name: startsWithDigit(transformedName) ? `_${transformedName}` : transformedName,
     };
 };
 
